@@ -10,7 +10,7 @@ image: /assets/img/post/map/header.png
 
 ## 获取位置权限
 
-在使用位置服务前，我们首先需要获取权限，并在每次使用前都检查权限，因为用户可以自己在设置中开关权限。目前权限有 5 种状态，定位精度有两种状态：
+在使用位置服务前，首先需要获取权限，并在每次使用前都检查权限，因为用户可以自己在设置中开关权限。目前权限有 5 种状态，定位精度有两种状态：
 
 ```swift
 enum CLAuthorizationStatus {
@@ -82,7 +82,7 @@ mapView.mapType = .satellite
 
 ### 改变显示区域
 
-我们可以通过设置中心点以及离中心点的距离来改变地图显示的区域以及缩放级别，比如我们获取到用户的位置 location 之后，将地图以用户位置为中心点显示：
+我们可以通过设置中心点以及离中心点的距离来改变地图显示的区域以及缩放级别，比如获取到用户的位置 location 之后，将地图以用户位置为中心点显示：
 
 ```swift
 let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
@@ -91,7 +91,7 @@ mapView.setRegion(region, animated: true)
 
 ### 限制显示区域
 
-如果我们只在某些特定区域提供服务，想要局部限制用户拖动地图的行为，那么可以使用如下方法限制地图的区域，也可以限制缩放级别，个人感觉这个使用场景并不多。
+如果只在某些特定区域提供服务，想要局部限制用户拖动地图的行为，那么可以使用如下方法限制地图的区域，也可以限制缩放级别，个人感觉这个使用场景并不多。
 
 ```swift
 let center = CLLocation(latitude: 34.2596292, longitude: 108.6870159)
@@ -121,7 +121,7 @@ public protocol MKAnnotation : NSObjectProtocol {
 
 我们实现这个协议，提供必备的坐标点，然后就可以添加到地图上了。
 
-如果我们想要改变标记点的UI，那么可以实现 `MKMapViewDelegate` 中的方法，返回 `MKAnnotationView` 的子类或者自定义类继承于它。
+如果想要改变标记点的UI，那么可以实现 `MKMapViewDelegate` 中的方法，返回 `MKAnnotationView` 的子类或者自定义类继承于它。
 
 ```swift
 func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
