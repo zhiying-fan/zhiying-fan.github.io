@@ -90,7 +90,7 @@ Xcode 将我们源代码中传给 [SwiftUI Text](https://developer.apple.com/doc
 
 ![](/assets/img/post/localization/demo.png)
 
-[![](/assets/img/post/localization/download-demo.png)](https://github.com/zhiying-fan/Demo-Localization.git)
+[![](/assets/img/post/download-demo.png){: width="200"}](https://github.com/zhiying-fan/Demo-Localization.git)
 
 ## 参考
 
