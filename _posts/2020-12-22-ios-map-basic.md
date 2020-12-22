@@ -1,5 +1,5 @@
 ---
-title: iOS 地图基础 - 显示与交互
+title: iOS 地图 MapKit - 显示与交互
 date: 2020-12-22 20:00:00 +0800
 categories: [iOS]
 tags: [map]     # TAG names should always be lowercase
@@ -16,20 +16,20 @@ image: /assets/img/post/map/header.png
 enum CLAuthorizationStatus {
     // 用户还未做出选择
     case notDetermined = 0
-		// 受限制，可能是家长控制等
+    // 受限制，可能是家长控制等
     case restricted = 1
-		// 用户明确拒绝
+    // 用户明确拒绝
     case denied = 2
-		// 始终允许
+    // 始终允许
     case authorizedAlways = 3
-		// 只在使用App时允许
+    // 只在使用App时允许
     case authorizedWhenInUse = 4
 }
 
 enum CLAccuracyAuthorization : Int {
-		// 精确定位
+    // 精确定位
     case fullAccuracy = 0
-		// 降低精准度，定位水平精度大概在5km
+    // 降低精准度，定位水平精度大概在5km
     case reducedAccuracy = 1
 }
 ```
@@ -39,8 +39,8 @@ enum CLAccuracyAuthorization : Int {
 根据自己的需求，在 `Info.plist` 中添加需要获取位置权限的描述，该描述会在请求权限时展示给用户。例如添加
 
 ```xml
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>我们会在导航时使用您的位置信息</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>我们会在导航时使用您的位置信息</string>
 ```
 
 如果需要 AlwaysUsage 权限的话，还需要在 Target - Signing & Capabilities 中添加 Background Modes 并勾选 Location updates
@@ -82,7 +82,7 @@ mapView.mapType = .satellite
 
 ### 改变显示区域
 
-我们可以通过设置中心点以及离中心点的距离来改变地图显示的区域以及缩放级别，比如我们获取到用户的位置 location 之后，将地图已用户位置为中心点显示：
+我们可以通过设置中心点以及离中心点的距离来改变地图显示的区域以及缩放级别，比如我们获取到用户的位置 location 之后，将地图以用户位置为中心点显示：
 
 ```swift
 let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
@@ -147,7 +147,7 @@ MKMarkerAnnotationView
 
 ![cluster](/assets/img/post/map/cluster.gif)
 
-只需要添加如下设置即可：
+需要添加如下设置：
 
 `annotationView?.clusteringIdentifier = "MallCluster"` 
 
@@ -155,7 +155,7 @@ Identifier 相同的标注点都会被自动的聚集在一起。
 
 ### 自定义气泡
 
-如果想要自定义点击标注点弹出的气泡，只需要将自定义的 View 设置给 AnnotationView，并设置 `canShowCallout = true` 即可，这里简单实现了显示副标题的气泡。
+如果想要自定义点击标注点弹出的气泡，可以将自定义的 View 设置给 AnnotationView，并设置 `canShowCallout = true` ，这里简单实现了显示副标题的气泡。
 
 ```swift
 annotationView?.canShowCallout = true
@@ -188,6 +188,8 @@ func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayR
   return MKOverlayRenderer()
 }
 ```
+
+到这里，涉及到 MapKit 的显示以及交互部分基本就都覆盖到了，下一篇文章会介绍如何利用 MapKit 搜索感兴趣的地方，并进行路径规划，显示在地图上。
 
 ## Demo
 
