@@ -191,6 +191,12 @@ func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayR
 
 到这里，涉及到 MapKit 的显示以及交互部分基本就都覆盖到了，下一篇文章会介绍如何利用 MapKit 搜索感兴趣的地方，并进行路径规划，显示在地图上。
 
+### 绘制相关类的关系图
+
+在地图上绘制的子类比较多，所以这里画了一个简单的图，看起来更清晰，红色和蓝色代表类实现了相应的协议。
+
+![diagram](/assets/img/post/map/map-kit-structure.png)
+
 ## Demo
 
 ![](/assets/img/post/map/demo.png){: width="300"}
