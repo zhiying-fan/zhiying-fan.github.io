@@ -88,7 +88,7 @@ mapView.mapType = .satellite
 mapView.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 48, right: 0)
 ```
 
-需要注意的是，需要遵守苹果官方的[设计规范](mapView.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 78, right: 0))，即放在用户可见的地方，只可以暂时被遮挡。
+需要注意的是，需要遵守苹果官方的[设计规范](https://developer.apple.com/design/human-interface-guidelines/maps/overview/introduction/)，即放在用户可见的地方，只可以暂时被遮挡。
 
 ### 改变显示区域
 
