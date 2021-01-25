@@ -80,6 +80,16 @@ locationManager.startUpdatingLocation()
 mapView.mapType = .satellite
 ```
 
+### 调整 Logo 和 Legal 的位置
+
+目前 MapKit 还没有官方可用的 API 来调整 Logo 的位置，如果想要调整其位置，可以通过添加 Margins 的方式：
+
+```swift
+mapView.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 48, right: 0)
+```
+
+需要注意的是，需要遵守苹果官方的[设计规范](mapView.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 78, right: 0))，即放在用户可见的地方，只可以暂时被遮挡。
+
 ### 改变显示区域
 
 我们可以通过设置中心点以及离中心点的距离来改变地图显示的区域以及缩放级别，比如获取到用户的位置 location 之后，将地图以用户位置为中心点显示：
@@ -189,19 +199,15 @@ func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayR
 }
 ```
 
-到这里，涉及到 MapKit 的显示以及交互部分基本就都覆盖到了，下一篇文章会介绍如何利用 MapKit 搜索感兴趣的地方，并进行路径规划，显示在地图上。
-
 ### 绘制相关类的关系图
 
-在地图上绘制的子类比较多，所以这里画了一个简单的图，看起来更清晰，红色和蓝色代表类实现了相应的协议。
+在地图上绘制的子类比较多，所以这里画了一个简单的图，看起来更清晰，虚线框代表里面的类实现了相应的协议。
 
-![diagram](/assets/img/post/map/map-kit-structure.png)
+![diagram](/assets/img/post/map/map-kit-structure.jpg)
 
-## Demo
 
-![](/assets/img/post/map/demo.png){: width="300"}
 
-[![](/assets/img/post/download-demo.png){: width="200"}](https://github.com/zhiying-fan/Demo-Map.git)
+到这里，涉及到 MapKit 的显示以及交互部分基本就都覆盖到了，下一篇文章会介绍如何利用 MapKit 搜索感兴趣的地方，并进行路径规划，显示在地图上。
 
 ## 参考
 

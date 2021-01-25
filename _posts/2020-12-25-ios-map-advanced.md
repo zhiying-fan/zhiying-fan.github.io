@@ -8,6 +8,8 @@ image: /assets/img/post/map/header.png
 
 使用地图来搜索感兴趣的地方，并且获取到达该地方的路径，想必是我们经常使用到的功能，那么在 MapKit 中如何实现呢，下面一起来看看吧。
 
+**写下该文章的时候，计算路径的 API 在国内还是不可用的，具体的可用区域可以查看 [iOS and iPadOS Feature Availability](https://www.apple.com/ios/feature-availability/#maps-directions)**
+
 ## 搜索
 
 MapKit 中实现搜索功能的类是 `MKLocalSearch`，主要有三个方法：
@@ -137,10 +139,6 @@ CLGeocoder().reverseGeocodeLocation(location, preferredLocale: locale) { (placem
 
 }
 ```
-
-## Demo
-
-[![](/assets/img/post/download-demo.png){: width="200"}](https://github.com/zhiying-fan/Demo-Map.git)
 
 ## 参考
 
