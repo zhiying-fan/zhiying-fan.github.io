@@ -3,7 +3,8 @@ title: iOS 项目国际化 Localization
 date: 2020-12-15 20:00:00 +0800
 categories: [iOS]
 tags: [localization]     # TAG names should always be lowercase
-image: /assets/img/post/localization/header.png
+image:
+  src: /assets/img/post/localization/header.png
 ---
 
 随着 Apple 对多语言用户使用体验的不断提升，从 iOS13 开始用户可以在应用设置中单独设置区别于系统的语言，同时对于开发者来说，对于多语言的适配体验也在不断的得到提升，本文将逐步说明如何对 iOS 项目做国际化支持。

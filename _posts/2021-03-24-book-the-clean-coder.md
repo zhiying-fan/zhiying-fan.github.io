@@ -3,7 +3,8 @@ title: 读《程序员的职业素养》：The Clean Coder
 date: 2021-03-24 20:00:00 +0800
 categories: [读书]
 tags: [books]     # TAG names should always be lowercase
-image: /assets/img/post/clean-coder/header.jpeg
+image:
+  src: /assets/img/post/clean-coder/header.jpeg
 ---
 
 这几天看了[《The Clean Coder》](https://book.douban.com/subject/11614538/)：A code of Conduct for Professional Programmers 这本书，是《Clean Code》这本书的作者所著，有一些自己认为颇为受益的点，这里分享给大家。

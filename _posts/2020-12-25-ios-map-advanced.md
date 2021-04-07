@@ -3,7 +3,8 @@ title: iOS 地图 MapKit - 搜索与路径
 date: 2020-12-25 20:00:00 +0800
 categories: [iOS]
 tags: [map]     # TAG names should always be lowercase
-image: /assets/img/post/map/header.png
+image:
+  src: /assets/img/post/map/header.png
 ---
 
 使用地图来搜索感兴趣的地方，并且获取到达该地方的路径，想必是我们经常使用到的功能，那么在 MapKit 中如何实现呢，下面一起来看看吧。

@@ -3,7 +3,8 @@ title: iOS 动态库 Dynamic library
 date: 2021-01-26 20:00:00 +0800
 categories: [iOS]
 tags: [library]     # TAG names should always be lowercase
-image: /assets/img/post/library/header.png
+image:
+  src: /assets/img/post/library/header.png
 ---
 
 动态库可以在 app launch time 或者 runtime 被加载，也就是说代码可以只在需要的时候被加载，这就减少了可执行文件的大小和 App 启动时的内存消耗。

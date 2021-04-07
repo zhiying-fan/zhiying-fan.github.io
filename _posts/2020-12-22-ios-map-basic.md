@@ -3,7 +3,8 @@ title: iOS 地图 MapKit - 显示与交互
 date: 2020-12-22 20:00:00 +0800
 categories: [iOS]
 tags: [map]     # TAG names should always be lowercase
-image: /assets/img/post/map/header.png
+image:
+  src: /assets/img/post/map/header.png
 ---
 
 我们在使用地图服务时，需要结合 [Core Location](https://developer.apple.com/documentation/corelocation) 和 [MapKit](https://developer.apple.com/documentation/mapkit) 两个框架，Core Location 主要是提供用户当前的位置和方向等信息，MapKit 用来显示地图、标注点、路径等信息。可以把 MapKit 理解为 View 层用来展示 Core Location 获取到的数据。
