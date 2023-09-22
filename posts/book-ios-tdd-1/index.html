@@ -1,0 +1,299 @@
+<!DOCTYPE html><html lang="en" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="generator" content="Jekyll v4.2.2" /><meta property="og:title" content="读《iOS Test-Driven Development》（一）" /><meta property="og:locale" content="en" /><meta name="description" content="TDD(Test-driven development) 是我们常聊的一种开发方式，我曾在开发 BFF(Backend For Frontend) 时实践 TDD，大为受益，也在编写 iOS 的 ViewModel 层时略有实践，但除了 ViewModel 层以外的许多场景，我都困惑于怎么实践 TDD，所以我阅读了 iOS Test-Driven Development 这本书，希望能从中找到答案。" /><meta property="og:description" content="TDD(Test-driven development) 是我们常聊的一种开发方式，我曾在开发 BFF(Backend For Frontend) 时实践 TDD，大为受益，也在编写 iOS 的 ViewModel 层时略有实践，但除了 ViewModel 层以外的许多场景，我都困惑于怎么实践 TDD，所以我阅读了 iOS Test-Driven Development 这本书，希望能从中找到答案。" /><link rel="canonical" href="https://zhiying-fan.github.io//posts/book-ios-tdd-1/" /><meta property="og:url" content="https://zhiying-fan.github.io//posts/book-ios-tdd-1/" /><meta property="og:site_name" content="Zhiying’s iOS Star" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2021-09-01T20:00:00+08:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="读《iOS Test-Driven Development》（一）" /><meta name="twitter:site" content="@twitter_username" /><meta name="google-site-verification" content="LuCYo62lEM-iH8hHdGrT5tKB0ZaRWeUFbWhPBJbVi70" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-09-01T20:00:00+08:00","datePublished":"2021-09-01T20:00:00+08:00","description":"TDD(Test-driven development) 是我们常聊的一种开发方式，我曾在开发 BFF(Backend For Frontend) 时实践 TDD，大为受益，也在编写 iOS 的 ViewModel 层时略有实践，但除了 ViewModel 层以外的许多场景，我都困惑于怎么实践 TDD，所以我阅读了 iOS Test-Driven Development 这本书，希望能从中找到答案。","headline":"读《iOS Test-Driven Development》（一）","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhiying-fan.github.io//posts/book-ios-tdd-1/"},"url":"https://zhiying-fan.github.io//posts/book-ios-tdd-1/"}</script><title>读《iOS Test-Driven Development》（一） | Zhiying's iOS Star</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="Zhiying's iOS Star"><meta name="application-name" content="Zhiying's iOS Star"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="dns-prefetch" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://cdn.jsdelivr.net" ><link rel="dns-prefetch" href="https://cdn.jsdelivr.net" ><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script> <script type="text/javascript"> class ModeToggle { static get MODE_KEY() { return "mode"; } static get MODE_ATTR() { return "data-mode"; } static get DARK_MODE() { return "dark"; } static get LIGHT_MODE() { return "light"; } static get ID() { return "mode-toggle"; } constructor() { if (this.hasMode) { if (this.isDarkMode) { if (!this.isSysDarkPrefer) { this.setDark(); } } else { if (this.isSysDarkPrefer) { this.setLight(); } } } let self = this; /* always follow the system prefers */ this.sysDarkPrefers.addEventListener("change", () => { if (self.hasMode) { if (self.isDarkMode) { if (!self.isSysDarkPrefer) { self.setDark(); } } else { if (self.isSysDarkPrefer) { self.setLight(); } } self.clearMode(); } self.notify(); }); } /* constructor() */ get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); } get isSysDarkPrefer() { return this.sysDarkPrefers.matches; } get isDarkMode() { return this.mode === ModeToggle.DARK_MODE; } get isLightMode() { return this.mode === ModeToggle.LIGHT_MODE; } get hasMode() { return this.mode != null; } get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); } /* get the current mode on screen */ get modeStatus() { if (this.isDarkMode || (!this.hasMode && this.isSysDarkPrefer)) { return ModeToggle.DARK_MODE; } else { return ModeToggle.LIGHT_MODE; } } setDark() { $('html').attr(ModeToggle.MODE_ATTR, ModeToggle.DARK_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); } setLight() { $('html').attr(ModeToggle.MODE_ATTR, ModeToggle.LIGHT_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); } clearMode() { $('html').removeAttr(ModeToggle.MODE_ATTR); sessionStorage.removeItem(ModeToggle.MODE_KEY); } /* Notify another plugins that the theme mode has changed */ notify() { window.postMessage({ direction: ModeToggle.ID, message: this.modeStatus }, "*"); } } /* ModeToggle */ const toggle = new ModeToggle(); function flipMode() { if (toggle.hasMode) { if (toggle.isSysDarkPrefer) { if (toggle.isLightMode) { toggle.clearMode(); } else { toggle.setLight(); } } else { if (toggle.isDarkMode) { toggle.clearMode(); } else { toggle.setDark(); } } } else { if (toggle.isSysDarkPrefer) { toggle.setLight(); } else { toggle.setDark(); } } toggle.notify(); } /* flipMode() */ </script><body data-spy="scroll" data-target="#toc" data-topbar-visible="true"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src=" /assets/img/avatar.jpg " alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">Zhiying's iOS Star</a></div><div class="site-subtitle font-italic">一个安静的知识星球</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tag ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fas fa-info-circle ml-xl-3 mr-xl-3 unloaded"></i> <span>ABOUT</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center"> <button class="mode-toggle btn" aria-label="Switch Mode"> <i class="fas fa-adjust"></i> </button> <span class="icon-border"></span> <a href="https://github.com/zhiying-fan" aria-label="github" target="_blank" rel="noopener"> <i class="fab fa-github"></i> </a> <a href="https://twitter.com/twitter_username" aria-label="twitter" target="_blank" rel="noopener"> <i class="fab fa-twitter"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['fanzhiying1992','gmail.com'].join('@')" aria-label="email" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" > <i class="fas fa-rss"></i> </a></div></div><div id="topbar-wrapper" class="row justify-content-center"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Home </a> </span> <span>读《iOS Test-Driven Development》（一）</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="Search..."> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="core-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"> <img data-src="/assets/img/post/tdd/header.png" class="preview-img bg" alt="Preview Image" data-proofer-ignore><h1 data-toc-skip>读《iOS Test-Driven Development》（一）</h1><div class="post-meta text-muted"><div> By <em> <a href="https://github.com/zhiying-fan">Zhiying Fan</a> </em></div><div class="d-flex"><div> <span> Posted <em class="timeago" data-ts="1630497600" data-toggle="tooltip" data-placement="bottom" data-tooltip-df="llll" > 2021-09-01 </em> </span> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="3040 words"> <em>16 min</em> read</span></div></div></div><div class="post-content"><p>TDD(Test-driven development) 是我们常聊的一种开发方式，我曾在开发 BFF(Backend For Frontend) 时实践 TDD，大为受益，也在编写 iOS 的 ViewModel 层时略有实践，但除了 ViewModel 层以外的许多场景，我都困惑于怎么实践 TDD，所以我阅读了 <a href="https://www.raywenderlich.com/books/ios-test-driven-development-by-tutorials">iOS Test-Driven Development</a> 这本书，希望能从中找到答案。</p><p>本篇将不会介绍如何在 iOS 项目中编写单元测试等基础概念，而是着重于分享如何对我平时觉得难以测试的部分进行 TDD。</p><h2 id="什么是-tdd"><span class="mr-2">什么是 TDD</span><a href="#什么是-tdd" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><p>TDD 顾名思义，就是用测试驱动开发，先写测试程序，然后编码实现其功能。下图非常形象地展示了 TDD 的过程。</p><p><img data-src="/assets/img/post/tdd/tdd-cycle.png" alt="" width="300" data-proofer-ignore> <em>本图片出自书中</em></p><ol><li>先写一个失败的等待被实现的测试用例<li>然后编写实现代码使测试通过<li>重构代码<li>重复此过程</ol><p>针对什么是 TDD 以及它的优缺点和争论，在这儿就不展开讲了，如果不熟悉的同学可以在网上查阅一下资料。</p><h2 id="可遵循的一种测试编写规范"><span class="mr-2">可遵循的一种测试编写规范</span><a href="#可遵循的一种测试编写规范" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-swift highlighter-rouge"><div class="code-header"> <span data-label-text="Swift"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre><span class="kd">func</span> <span class="nf">testAppModel_whenStarted_isInInProgressState</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// 1 given app in not started</span>
+  <span class="k">let</span> <span class="nv">sut</span> <span class="o">=</span> <span class="kt">AppModel</span><span class="p">()</span>
+
+  <span class="c1">// 2 when started</span>
+  <span class="n">sut</span><span class="o">.</span><span class="nf">start</span><span class="p">()</span>
+
+  <span class="c1">// 3 then it is in inProgress</span>
+  <span class="k">let</span> <span class="nv">observedState</span> <span class="o">=</span> <span class="n">sut</span><span class="o">.</span><span class="n">appState</span>
+  <span class="kt">XCTAssertEqual</span><span class="p">(</span><span class="n">observedState</span><span class="p">,</span> <span class="kt">AppState</span><span class="o">.</span><span class="n">inProgress</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></table></code></div></div><ol><li>首先是测试的命名，建议要描述出测试的条件和意图，可以使用 testgiven_when_then 的模式来对测试命名，这样在测试日志中就能轻易地看出是哪里出错了。<li>sut 是 system under test 的缩写，如果都遵循这个变量命名的话，是非常简洁易懂的。<li><p>最重要的是测试方法的结构，同样按照 given/when/then 来进行：</p><ol><li>given 一般即系统的初始状态<li>when 则是会影响系统的行为、事件或状态改变<li>then 则是对得到的结果和预期进行比对</ol></ol><h2 id="第一个测试"><span class="mr-2">第一个测试</span><a href="#第一个测试" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><p>第一个测试，往往是从测试一个还没有的类开始的，比如我们希望测试一个类 <code class="language-plaintext highlighter-rouge">AppModel</code> 刚初始化完之后的状态</p><div class="language-swift highlighter-rouge"><div class="code-header"> <span data-label-text="Swift"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="kd">func</span> <span class="nf">testAppModel_whenInitialized_isInNotStartedState</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="nv">sut</span> <span class="o">=</span> <span class="kt">AppModel</span><span class="p">()</span>
+  <span class="k">let</span> <span class="nv">initialState</span> <span class="o">=</span> <span class="n">sut</span><span class="o">.</span><span class="n">appState</span>
+  <span class="kt">XCTAssertEqual</span><span class="p">(</span><span class="n">initialState</span><span class="p">,</span> <span class="kt">AppState</span><span class="o">.</span><span class="n">notStarted</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></table></code></div></div><p>这个时候我们其实都还没有创建 AppModel 这个类，一定记住，<strong>测试先行，我们把编译错误也认为是测试失败</strong>，因此我们已经做到了 TDD 的第一步，Red，即写了一个失败的测试。</p><h2 id="怎么对-viewcontroller-进行测试"><span class="mr-2">怎么对 ViewController 进行测试</span><a href="#怎么对-viewcontroller-进行测试" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><blockquote><p>The important thing when testing view controllers is to not test the views and controls directly. This is better done using UI automation tests. Here, the goal is to check the logic and state of the view controller.</p></blockquote><p>我们测试的是 ViewController 的逻辑和状态，而视图和交互组件的测试则交给 UI 测试。怎么样才能使其中的逻辑和状态更容易被测试呢，想必对架构有所研究的同学们应该知道答案了，那就是使用 MVVM 或者 VIPER 等架构，把逻辑从 ViewController 中抽取出来，使得 ViewModel 变得容易被测试。</p><p>这里我们还是先从 MVC 的架构入手，看看如何进行测试。</p><h3 id="如何获取正确加载的-viewcontroller-实例"><span class="mr-2">如何获取正确加载的 ViewController 实例</span><a href="#如何获取正确加载的-viewcontroller-实例" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3></h3><p>在测试中，如果我们使用 <code class="language-plaintext highlighter-rouge">let sut = ViewController()</code> 去实例化 ViewController 然后对其中的一些状态进行测试，那么和我们正常启动 App 运行 ViewController 的过程是不一样的，这个实例是没有被正确初始化的，因此在使用其测试时不能获取到它正确的子视图或者一些状态。因此我们需要找到一种办法获取正确的 ViewController 实例。</p><h4 id="从-app-的运行环境中获取"><span class="mr-2">从 App 的运行环境中获取</span><a href="#从-app-的运行环境中获取" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h4></h4><p>其实在运行测试时，Xcode 是会运行一个 Host Application 的，默认会运行我们的 App Target，这就是有时候我们在跑测试时，会看到在模拟器运行 App 的原因，其实测试都是被运行在 App 的上下文中的，我们可以取到 <code class="language-plaintext highlighter-rouge">UIApplication</code> 对象以及整个视图层级。</p><div class="language-swift highlighter-rouge"><div class="code-header"> <span data-label-text="Swift"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="k">let</span> <span class="nv">window</span> <span class="o">=</span> <span class="kt">UIApplication</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="n">windows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">let</span> <span class="nv">rootViewController</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">rootViewController</span>
+<span class="c1">// 取到 rootViewController 之后，根据你自己的视图层级，获取想要的 VC</span>
+<span class="k">let</span> <span class="nv">yourViewController</span> <span class="o">=</span> <span class="n">rootViewController</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">first</span> <span class="p">{</span> <span class="nv">$0</span> <span class="k">is</span> <span class="kt">YourViewController</span> <span class="p">}</span>
+</pre></table></code></div></div><p>通过上面的代码片段，我们即可取到 App 运行起来之后你想要的 ViewController 的正确实例。</p><h4 id="实例化并加载视图"><span class="mr-2">实例化并加载视图</span><a href="#实例化并加载视图" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h4></h4><p>如果你的视图是从 Storyboard 加载的，那么可以使用以下方法正确的实例化一个 ViewController</p><div class="language-swift highlighter-rouge"><div class="code-header"> <span data-label-text="Swift"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="k">let</span> <span class="nv">storyboard</span> <span class="o">=</span> <span class="kt">UIStoryboard</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"Main"</span><span class="p">,</span> <span class="nv">bundle</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">yourViewController</span> <span class="o">=</span> <span class="n">storyboard</span><span class="o">.</span><span class="nf">instantiateViewcontroller</span><span class="p">(</span><span class="nv">withIdentifier</span><span class="p">:</span> <span class="s">"yourViewController"</span><span class="p">)</span> <span class="k">as!</span> <span class="kt">YourViewController</span>
+<span class="n">yourViewController</span><span class="o">.</span><span class="nf">loadViewIfNeeded</span><span class="p">()</span>
+</pre></table></code></div></div><p>从 xib 加载也是类似的。</p><h3 id="测试-viewcontroller-中的状态或逻辑"><span class="mr-2">测试 ViewController 中的状态或逻辑</span><a href="#测试-viewcontroller-中的状态或逻辑" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3></h3><p>获取到 ViewController 的实例后，然后我们就要甄别出 UI 之外的状态和逻辑，这样测试起来就和 ViewModel 很类似了。比如对其中的某个方法进行测试，期望它正确的修改了 ViewController 中的变量：</p><div class="language-swift highlighter-rouge"><div class="code-header"> <span data-label-text="Swift"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre><span class="kd">func</span> <span class="nf">testDataModel_whenGoalUpdate_updatesToNewGoal</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// given</span>
+  <span class="k">let</span> <span class="nv">sut</span> <span class="o">=</span> <span class="n">yourViewController</span>
+
+  <span class="c1">// when</span>
+  <span class="n">sut</span><span class="o">.</span><span class="nf">updateGoal</span><span class="p">(</span><span class="nv">newGoal</span><span class="p">:</span> <span class="mi">50</span><span class="p">)</span>
+
+  <span class="c1">// then</span>
+  <span class="kt">XCTAssertEqual</span><span class="p">(</span><span class="n">sut</span><span class="o">.</span><span class="n">goal</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></table></code></div></div><p>我们对 ViewController 的测试，不需要追求 100% 的测试覆盖率，因为视图部分的测试将被 UI automation 测试所覆盖。</p><h2 id="对异步事件进行测试"><span class="mr-2">对异步事件进行测试</span><a href="#对异步事件进行测试" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><p>在上个例子中使用 <code class="language-plaintext highlighter-rouge">XCTAssert</code> 断言语句时，我们测试的是同步事件，那么如何对异步耗时事件进行测试呢？这也是 iOS 测试中需要面临的重要问题。</p><p><code class="language-plaintext highlighter-rouge">XCTestExpectation</code> 为我们测试异步事件提供了很好的能力，它主要分别两部分：<code class="language-plaintext highlighter-rouge">expectation</code> 和 <code class="language-plaintext highlighter-rouge">waiter</code>。 <code class="language-plaintext highlighter-rouge">waiter</code> 会一直等待 <code class="language-plaintext highlighter-rouge">expectation</code> 被 <code class="language-plaintext highlighter-rouge">fulfill</code>，然后再继续执行；或者在等不到的某个时间之后超时失败。</p><div class="language-swift highlighter-rouge"><div class="code-header"> <span data-label-text="Swift"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre><span class="kd">func</span> <span class="nf">testStoryLoading</span><span class="p">()</span> <span class="k">throws</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">parser</span> <span class="o">=</span> <span class="kt">FeedParser</span><span class="p">()</span>
+
+    <span class="c1">// create the expectation</span>
+    <span class="k">let</span> <span class="nv">exp</span> <span class="o">=</span> <span class="nf">expectation</span><span class="p">(</span><span class="nv">description</span><span class="p">:</span> <span class="s">"Loading stories"</span><span class="p">)</span>
+
+    <span class="c1">// call my asynchronous method</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">loadStories</span> <span class="p">{</span>
+        <span class="c1">// when it finishes, mark my expectation as being fulfilled</span>
+        <span class="n">exp</span><span class="o">.</span><span class="nf">fulfill</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="c1">// wait three seconds for all outstanding expectations to be fulfilled</span>
+    <span class="nf">waitForExpectations</span><span class="p">(</span><span class="nv">timeout</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span>
+
+    <span class="c1">// our expectation has been fulfilled, so we can check the result is correct</span>
+    <span class="kt">XCTAssertEqual</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">stories</span><span class="o">.</span><span class="n">count</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s">"We should have loaded exactly 20 stories."</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></table></code></div></div><p>这就是我们如何测试异步事件的。</p><h3 id="一些特殊异步事件的测试"><span class="mr-2">一些特殊异步事件的测试</span><a href="#一些特殊异步事件的测试" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3></h3><p><code class="language-plaintext highlighter-rouge">XCTestExpectation</code> 还有一些别的方法，可以用来方便的测试一些其它的异步场景，比如下面的方法可以用来针对性的测试通知事件。</p><div class="language-swift highlighter-rouge"><div class="code-header"> <span data-label-text="Swift"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="kd">func</span> <span class="nf">expectation</span><span class="p">(</span><span class="n">forNotification</span> <span class="nv">notificationName</span><span class="p">:</span> <span class="kt">NSNotification</span><span class="o">.</span><span class="kt">Name</span><span class="p">,</span> <span class="n">object</span> <span class="nv">objectToObserve</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kt">XCTNSNotificationExpectation</span><span class="o">.</span><span class="kt">Handler</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">XCTestExpectation</span>
+</pre></table></code></div></div><p>使用 <code class="language-plaintext highlighter-rouge">XCTKVOExpectation</code> 可以观察某一个 <code class="language-plaintext highlighter-rouge">keyPath</code> 的改变；使用 <code class="language-plaintext highlighter-rouge">XCTNSPredicateExpectation</code> 可以监听某一个 <code class="language-plaintext highlighter-rouge">predicate</code> 是否为真。</p><p>在使用 <code class="language-plaintext highlighter-rouge">expectation</code> 时的一个好的实践是：总是在异步回调中调用 <code class="language-plaintext highlighter-rouge">fulfill()</code>，就算是对于一些异步事件中的错误，也不要依赖超时去抛出错误，而是应该在 <code class="language-plaintext highlighter-rouge">fulfill</code> 之后，使用断言语句检查期望的错误。等待 <code class="language-plaintext highlighter-rouge">wait</code> 超时是非常浪费时间的。</p><h2 id="dependency-injection--mocks"><span class="mr-2">Dependency Injection &amp; Mocks</span><a href="#dependency-injection--mocks" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><p>我们在对系统进行测试时，难免会遇到受外部依赖的限制这种情况，比如依赖网络请求获取到的数据，依赖三方库提供的能力等等。这种依赖是不稳定的，并且我们如果在测试时真正去做发起网络请求类似的事情，会非常浪费时间，因此我们会把依赖分离开来，通过注入的方式，给系统提供某种能力，然后在测试时，使用 Test Doubles 来模仿出这种能力，进而不影响系统的测试。Mock 是 Test Double 的非正式叫法。</p><p>提到 Test Doubles，不得不说一下它的几种不同类型： Stub、Spy、Mock、Fake。</p><h3 id="test-doubles-的不同类型"><span class="mr-2">Test Doubles 的不同类型</span><a href="#test-doubles-的不同类型" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3></h3><p>以下例子来自 <a href="https://blog.cleancoder.com/uncle-bob/2014/05/14/TheLittleMocker.html">The Little Mocker</a>，为 Java 代码。</p><p>假设现在有一个接口</p><pre><code class="language-jave">interface Authorizer {
+  public Boolean authorize(String username, String password);
+}
+</code></pre><p>如果希望创建该接口的 test doubles 的话，我们分别来看几种不同的形式。</p><h4 id="stub"><span class="mr-2">Stub</span><a href="#stub" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h4></h4><p>用来返回 hard coded 的数据，推荐使用。</p><div class="language-java highlighter-rouge"><div class="code-header"> <span data-label-text="Java"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AcceptingAuthorizerStub</span> <span class="kd">implements</span> <span class="nc">Authorizer</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">authorize</span><span class="o">(</span><span class="nc">String</span> <span class="n">username</span><span class="o">,</span> <span class="nc">String</span> <span class="n">password</span><span class="o">)</span> <span class="o">{</span>
+	  <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></table></code></div></div><h4 id="spy"><span class="mr-2">Spy</span><a href="#spy" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h4></h4><p>用来返回 hard coded 的数据，并且记录一些信息，不推荐使用但对于复杂情况可以接受，容易使测试和代码实现强耦合。</p><div class="language-java highlighter-rouge"><div class="code-header"> <span data-label-text="Java"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AcceptingAuthorizerSpy</span> <span class="kd">implements</span> <span class="nc">Authorizer</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">boolean</span> <span class="n">authorizeWasCalled</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">authorize</span><span class="o">(</span><span class="nc">String</span> <span class="n">username</span><span class="o">,</span> <span class="nc">String</span> <span class="n">password</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">authorizeWasCalled</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></table></code></div></div><h4 id="mock"><span class="mr-2">Mock</span><a href="#mock" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h4></h4><p>用来返回 hard coded 的数据，同时记录一些信息，并且进行断言验证。Mock 总是包含 Spy 的，它更多的是验证行为，哪些函数被调用了、都有哪些参数、何时以及调用次数等行为。不推荐使用，因为它讲断言的验证隐藏在了 Mock 中。</p><div class="language-java highlighter-rouge"><div class="code-header"> <span data-label-text="Java"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AcceptingAuthorizerVerificationMock</span> <span class="kd">implements</span> <span class="nc">Authorizer</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">boolean</span> <span class="n">authorizeWasCalled</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">authorize</span><span class="o">(</span><span class="nc">String</span> <span class="n">username</span><span class="o">,</span> <span class="nc">String</span> <span class="n">password</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">authorizeWasCalled</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">verify</span><span class="o">()</span> <span class="o">{</span>
+	  <span class="k">return</span> <span class="n">authorizedWasCalled</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></table></code></div></div><h4 id="fake"><span class="mr-2">Fake</span><a href="#fake" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h4></h4><p>根据不同的逻辑返回不同的假数据，完全不推荐，因为它包含了真正的业务逻辑在里面，还需要给 Fake 再写测试。</p><pre><code class="language-Java">public class AcceptingAuthorizerFake implements Authorizer {
+  public Boolean authorize(String username, String password) {
+    return username.equals("Bob");
+  }
+}
+</code></pre><h3 id="dependency-injection"><span class="mr-2">Dependency Injection</span><a href="#dependency-injection" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3></h3><p>现在假设我们正在做一个计步器的 App，我们获取步数的数据来源是 Apple 的 CoreMotion 框架提供给我们的 <code class="language-plaintext highlighter-rouge">CMPedometer</code> 类。一个预期的功能是，当点击开始时，来启动 <code class="language-plaintext highlighter-rouge">CMPedometer</code> 服务。根据这个 case，可以写出一个下面这样的测试：</p><div class="language-swift highlighter-rouge"><div class="code-header"> <span data-label-text="Swift"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre><td class="rouge-code"><pre><span class="kd">func</span> <span class="nf">testAppModel_whenStarted_startsPedometer</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">//given</span>
+  <span class="k">let</span> <span class="nv">sut</span> <span class="o">=</span> <span class="kt">AppModel</span><span class="p">()</span>
+  <span class="k">let</span> <span class="nv">exp</span> <span class="o">=</span> <span class="nf">expectation</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="kt">NSPredicate</span><span class="p">(</span><span class="nv">block</span><span class="p">:</span>
+  <span class="p">{</span> <span class="n">thing</span><span class="p">,</span> <span class="n">_</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="k">in</span>
+    <span class="nf">return</span> <span class="p">(</span><span class="n">thing</span> <span class="k">as!</span> <span class="kt">AppModel</span><span class="p">)</span><span class="o">.</span><span class="n">pedometerStarted</span>
+  <span class="p">}),</span> <span class="nv">evaluatedWith</span><span class="p">:</span> <span class="n">sut</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+
+  <span class="c1">// when</span>
+  <span class="n">sut</span><span class="o">.</span><span class="nf">start</span><span class="p">()</span>
+
+  <span class="c1">// then</span>
+  <span class="nf">wait</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="p">[</span><span class="n">exp</span><span class="p">],</span> <span class="nv">timeout</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="kt">XCTAssertTrue</span><span class="p">(</span><span class="n">sut</span><span class="o">.</span><span class="n">pedometerStarted</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></table></code></div></div><p>基于以上测试，<code class="language-plaintext highlighter-rouge">AppModel</code> 的实现可以是这样的：</p><div class="language-swift highlighter-rouge"><div class="code-header"> <span data-label-text="Swift"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre><span class="kd">class</span> <span class="kt">AppModel</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="nv">pedometer</span> <span class="o">=</span> <span class="kt">CMPedometer</span><span class="p">()</span>
+  <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">pedometerStarted</span> <span class="o">=</span> <span class="kc">false</span>
+
+  <span class="kd">func</span> <span class="nf">start</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">pedometer</span><span class="o">.</span><span class="n">startEventUpdates</span> <span class="p">{</span> <span class="n">event</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
+      <span class="k">if</span> <span class="n">error</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">pedometerStarted</span> <span class="o">=</span> <span class="kc">true</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></table></code></div></div><p>如果我们在真实的设备上执行测试，并且给予了获取步数的权限，这个测试是可以通过的。但是请注意我们给测试通过加了两个前提，这是不正常的，这时候就该 Test Doubles 出场了，创建 Mock 的对象，来摆脱外部的依赖。一起来看看怎么做吧！</p><p>我们希望测试的是点击了 start 之后，之后的行为是正确的。那么可以通过模拟 <code class="language-plaintext highlighter-rouge">start()</code> 函数，来验证期望的行为。怎么将 <code class="language-plaintext highlighter-rouge">CMPedometer</code> 这个外部依赖进行分离呢，一个好的方式就是通过注入的方式提供给消费它的对象。</p><p>首先创建一个协议，来提供 <code class="language-plaintext highlighter-rouge">start()</code> 应该有的行为，并让 CMPedometer 实现这个协议。</p><div class="language-swift highlighter-rouge"><div class="code-header"> <span data-label-text="Swift"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre><span class="kd">protocol</span> <span class="kt">Pedometer</span> <span class="p">{</span>
+  <span class="kd">func</span> <span class="nf">start</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">CMPedometer</span><span class="p">:</span> <span class="kt">Pedometer</span> <span class="p">{</span>
+  <span class="kd">func</span> <span class="nf">start</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">startEventUpdates</span> <span class="p">{</span> <span class="n">event</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
+      <span class="c1">// do nothing here for now</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></table></code></div></div><p>然后来重构 <code class="language-plaintext highlighter-rouge">AppModel</code>，注入 Pedometer 服务。</p><div class="language-swift highlighter-rouge"><div class="code-header"> <span data-label-text="Swift"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre><span class="kd">class</span> <span class="kt">AppModel</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="nv">pedometer</span><span class="p">:</span> <span class="kt">Pedometer</span>
+
+  <span class="nf">init</span><span class="p">(</span><span class="nv">pedometer</span><span class="p">:</span> <span class="kt">Pedometer</span> <span class="o">=</span> <span class="kt">CMPedometer</span><span class="p">())</span> <span class="p">{</span>
+    <span class="k">self</span><span class="o">.</span><span class="n">pedometer</span> <span class="o">=</span> <span class="n">pedometer</span>
+  <span class="p">}</span>
+
+  <span class="kd">func</span> <span class="nf">start</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">pedometer</span><span class="o">.</span><span class="nf">start</span><span class="p">()</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></table></code></div></div><p>然后再去重构测试，创建 <code class="language-plaintext highlighter-rouge">PedometerSpy</code>。</p><div class="language-swift highlighter-rouge"><div class="code-header"> <span data-label-text="Swift"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre><td class="rouge-code"><pre><span class="kd">class</span> <span class="kt">PedometerSpy</span><span class="p">:</span> <span class="kt">Pedometer</span> <span class="p">{</span>
+  <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">started</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span>
+
+  <span class="kd">func</span> <span class="nf">start</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">started</span> <span class="o">=</span> <span class="kc">true</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">testAppModel_whenStarted_startsPedometer</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">//given</span>
+  <span class="k">var</span> <span class="nv">pedometerSpy</span> <span class="o">=</span> <span class="kt">PedometerSpy</span><span class="p">()</span>
+  <span class="k">let</span> <span class="nv">sut</span> <span class="o">=</span> <span class="kt">AppModel</span><span class="p">(</span><span class="nv">pedometer</span><span class="p">:</span> <span class="n">pedometerSpy</span><span class="p">)</span>
+
+  <span class="c1">// when</span>
+  <span class="n">sut</span><span class="o">.</span><span class="nf">start</span><span class="p">()</span>
+
+  <span class="c1">// then</span>
+  <span class="kt">XCTAssertTrue</span><span class="p">(</span><span class="n">pedometerSpy</span><span class="o">.</span><span class="n">started</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></table></code></div></div><p>这样就完成了外部依赖的分离，成功的创建一个 Mock 的对象，来完成我们的测试。</p><p>其它的外部依赖，比如网络请求，都可以用这种模式进行分离。</p><h2 id="参考"><span class="mr-2">参考</span><a href="#参考" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><ul><li><a href="https://www.hackingwithswift.com/example-code/testing/how-to-test-asynchronous-functions-using-expectation">How to test asynchronous functions using expectation()</a><li><a href="https://blog.cleancoder.com/uncle-bob/2014/05/14/TheLittleMocker.html">The Little Mocker</a></ul></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/%E8%AF%BB%E4%B9%A6/'>读书</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/books/" class="post-tag no-text-decoration" >books</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/"> CC BY 4.0 </a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=读《iOS Test-Driven Development》（一） - Zhiying&#39;s iOS Star&amp;url=https://zhiying-fan.github.io//posts/book-ios-tdd-1/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=读《iOS Test-Driven Development》（一） - Zhiying&#39;s iOS Star&amp;u=https://zhiying-fan.github.io//posts/book-ios-tdd-1/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://t.me/share/url?url=https://zhiying-fan.github.io//posts/book-ios-tdd-1/&amp;text=读《iOS Test-Driven Development》（一） - Zhiying&#39;s iOS Star" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <i id="copy-link" class="fa-fw fas fa-link small" data-toggle="tooltip" data-placement="top" title="Copy link" data-title-succeed="Link copied successfully!"> </i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted"><div class="access"><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/books/">books</a> <a class="post-tag" href="/tags/english/">english</a> <a class="post-tag" href="/tags/map/">map</a> <a class="post-tag" href="/tags/combine/">combine</a> <a class="post-tag" href="/tags/library/">library</a> <a class="post-tag" href="/tags/localization/">localization</a> <a class="post-tag" href="/tags/pipeline/">pipeline</a> <a class="post-tag" href="/tags/test/">test</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"><div class="panel-heading pl-3 pt-2 mb-2">Contents</div><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="tail-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/book-fullstack-react-native-1/"><div class="card-body"> <em class="timeago small" data-ts="1647000000" > 2022-03-11 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>读《Fullstack React Native》（一）</h3><div class="text-muted small"><p> React Native 作为 Mobile 端的跨平台方案之一，有它独特的优势。之前虽然对其有所了解，但是不够系统和深入，这次借助工作的机会，从这本《Fullstack React Native》开始，加上项目的实践，得以对 React Native 有更深的理解。 书中的第一个例子是一个天气应用，用户可以输入不同的城市，以得到相应的天气预报。 第一个 Component App 的...</p></div></div></a></div><div class="card"> <a href="/posts/book-fullstack-react-native-2/"><div class="card-body"> <em class="timeago small" data-ts="1648123200" > 2022-03-24 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>读《Fullstack React Native》（二）</h3><div class="text-muted small"><p> 七步法构建 RN 应用 这本书的第二章，用了一个新的示例应用：计时器，介绍了构建 RN 应用的七步法，分别是： 把应用分解为不同的组件。 开始构建一个静态的应用。 决定哪些数据需要使用 state 来保存状态。 决定这些 state 应该存在在哪个组件中。 先用 hardcode 的初始状态。 添加数据流动逻辑，包括向上的数据流动。 添加和服务器的通信。 ...</p></div></div></a></div><div class="card"> <a href="/posts/book-mastering-anger-and-aggression/"><div class="card-body"> <em class="timeago small" data-ts="1648900800" > 2022-04-02 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>读《应对孩子的愤怒与攻击》</h3><div class="text-muted small"><p> 随着生活环境的改变以及两个娃逐渐的长大，娃的教育问题愈加变得急迫起来，可以说每天都在困扰着我和我老婆。举一个几乎每天都在发生的事情作为例子：凡凡（二娃）把姐姐的玩具拆了，姐姐很生气，动手就去打弟弟。这样的场景我们不能说谁是错的，但是又该怎么处理才更好呢？怎么处理好姐姐生气的情绪以及带来的打人的行为，怎么处理不知所措的弟弟呢？作为新手爸妈，虽然把娃养到了 3 岁，但是教育问题，才刚刚开始。 ...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/ios-combine-core-concepts/" class="btn btn-outline-primary" prompt="Older"><p>iOS Combine：核心概念</p></a> <a href="/posts/book-fullstack-react-native-1/" class="btn btn-outline-primary" prompt="Newer"><p>读《Fullstack React Native》（一）</p></a></div><div id="disqus_thread" class="pt-2 pb-2"><p class="text-center text-muted small"> Comments powered by <a href="https://disqus.com/">Disqus</a>.</p></div><script type="text/javascript"> var disqus_config = function () { this.page.url = 'https://zhiying-fan.github.io//posts/book-ios-tdd-1/'; this.page.identifier = '/posts/book-ios-tdd-1/'; }; /* Lazy loading */ var disqus_observer = new IntersectionObserver(function (entries) { if(entries[0].isIntersecting) { (function () { var d = document, s = d.createElement('script'); s.src = 'https://zhiying.disqus.com/embed.js'; s.setAttribute('data-timestamp', +new Date()); (d.head || d.body).appendChild(s); })(); disqus_observer.disconnect(); } }, { threshold: [0] }); disqus_observer.observe(document.querySelector('#disqus_thread')); /* Auto switch theme */ function reloadDisqus() { /* Disqus hasn't been loaded */ if (typeof DISQUS === "undefined") { return; } if (document.readyState == 'complete') { DISQUS.reset({ reload: true, config: disqus_config }); } } const modeToggle = document.querySelector(".mode-toggle"); if (typeof modeToggle !== "undefined") { /* modeToggle.addEventListener('click', reloadDisqus); // not pretty for 'color-scheme' */ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', reloadDisqus); } </script></div></div></div><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center text-muted"><div class="footer-left"><p class="mb-0"> © 2023 <a href="https://github.com/zhiying-fan">Zhiying Fan</a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/books/">books</a> <a class="post-tag" href="/tags/english/">english</a> <a class="post-tag" href="/tags/map/">map</a> <a class="post-tag" href="/tags/combine/">combine</a> <a class="post-tag" href="/tags/library/">library</a> <a class="post-tag" href="/tags/localization/">localization</a> <a class="post-tag" href="/tags/pipeline/">pipeline</a> <a class="post-tag" href="/tags/test/">test</a></div></div></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script> <script src="https://cdn.jsdelivr.net/combine/npm/magnific-popup@1/dist/jquery.magnific-popup.min.js,npm/lozad/dist/lozad.min.js,npm/clipboard@2/dist/clipboard.min.js"></script> <script src="https://cdn.jsdelivr.net/combine/npm/dayjs@1/dayjs.min.js,npm/dayjs@1/locale/en.min.js,npm/dayjs@1/plugin/relativeTime.min.js,npm/dayjs@1/plugin/localizedFormat.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.bundle.min.js"></script> <script defer src="/app.js"></script>
